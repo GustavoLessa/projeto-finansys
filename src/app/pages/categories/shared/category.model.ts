@@ -1,9 +1,8 @@
 
-
 export class Category {
-  construcor(
+
+  constructor(
     public id?: number,
-    public nome?: string,
-    public description?: string
-  );
+    public name?: string,
+    public description?: string) {}
 }
