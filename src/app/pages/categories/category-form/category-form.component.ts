@@ -9,6 +9,7 @@ import { switchMap } from "rxjs/operators";
 
 import toaster from "toastr";
 import { PARAMETERS } from '@angular/core/src/util/decorators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-category-form',
@@ -21,7 +22,7 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
   categoryForm: FormGroup;
   pageTitle: string;
   serverErrormessages: string[] = null;
-  submittngForm: false;
+  submittingForm = false;
   category: Category = new Category();
 
   constructor(
@@ -41,7 +42,37 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
     this.setPageTitle();
   }
 
+  submitForm() {
+    this.submittingForm = true;
+
+    if (this.currentAction === 'new') {
+      this.createCategory();
+    } else {
+      this.updateCategory();
+    }
+  }
+
   // PRIVATE METHODS
+
+  private createCategory() {
+    const category: Category = Object.assign(new Category(), this.categoryForm.value);
+
+    this.categoryService.create(category)
+      .subscribe(
+        category => this.actionsForSuccess(category),
+        error => this.actionsForError(error)
+      );
+  }
+
+  private updateCategory() {
+    const category: Category = Object.assign(new Category(), this.categoryForm.value);
+
+    this.categoryService.update(category)
+      .subscribe(
+        category => this.actionsForSuccess(category),
+        error => this.actionsForError(error)
+      );
+  }
 
   private setCurrentAction() {
     if (this.route.snapshot.url[0].path === 'new') {
@@ -70,17 +101,37 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
           this.categoryForm.patchValue(category); // binds load category data to categoryForm
         },
         (error) => alert('ocorreu um erro no servidor, tente mais tarde')
-
       );
     }
   }
 
   private setPageTitle() {
-    if (this.currentAction = 'new') {
+    if (this.currentAction === 'new') {
       this.pageTitle = 'Cadastro de Nova Categoria';
     } else {
       const categoryName = this.category.name || '';
       this.pageTitle = 'Editando Categoria: ' + categoryName;
+    }
+  }
+
+  private actionsForSuccess(category: Category) {
+    toaster.success('Solicitação processada com sucesso!');
+
+    // redirect/reload component page
+    this.router.navigateByUrl('categories', {skipLocationChange: true}).then(
+      () => this.router.navigate(['categories', category.id, 'edit'])
+    );
+  }
+
+  private actionsForError(error) {
+    toaster.console.error('Ocorreu um erro ao processar a sua solicitação!');
+
+    this.submittingForm = false;
+
+    if (error.status === 422) {
+      this.serverErrormessages = JSON.parse(error._body).errors;
+    } else {
+      this.serverErrormessages = ['Falha na comunicação com o servidor. Por favor, tente mais tarde.'];
     }
   }
 }
