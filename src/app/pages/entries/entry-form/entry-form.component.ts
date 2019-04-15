@@ -81,8 +81,8 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
     return Object.entries(Entry.types).map(
       ([value, text]) => {
         return {
-          text: text,
-          value: value
+          text,
+          value
         };
       }
     );
@@ -134,7 +134,7 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
   private loadEntry() {
     if (this.currentAction === 'edit') {
       this.route.paramMap.pipe(
-        switchMap(params => this.entryService.getById(+params.get("id")))
+        switchMap(params => this.entryService.getById(+params.get('id')))
       )
       .subscribe(
         (entry) => {
