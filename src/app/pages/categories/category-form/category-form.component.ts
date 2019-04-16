@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterContentChecked } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validator, Validators } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
+import { FormBuilder, FormControl, FormGroup, Validator, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Category } from "../shared/category.model";
 import { CategoryService } from "../shared/category.service";
@@ -8,8 +8,7 @@ import { CategoryService } from "../shared/category.service";
 import { switchMap } from "rxjs/operators";
 
 import toaster from "toastr";
-import { PARAMETERS } from '@angular/core/src/util/decorators';
-import { Subject } from 'rxjs';
+
 
 @Component({
   selector: 'app-category-form',
