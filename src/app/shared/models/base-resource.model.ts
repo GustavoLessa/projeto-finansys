@@ -1,4 +1,5 @@
-export abstract class BaseResoruceModel {
+
+export abstract class BaseResourceModel {
   id?: number;
 
 }
