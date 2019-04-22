@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterContentChecked } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validator, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Category } from "../shared/category.model";
@@ -7,7 +7,8 @@ import { CategoryService } from "../shared/category.service";
 
 import { switchMap } from "rxjs/operators";
 
-import toaster from "toastr";
+//import toaster from 'toastr';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -28,7 +29,8 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
     private categoryService: CategoryService,
     private route: ActivatedRoute,
     private router: Router,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private toaster: ToastrService
   ) { }
 
   ngOnInit() {
@@ -114,7 +116,7 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
   }
 
   private actionsForSuccess(category: Category) {
-    toaster.success('Solicitação processada com sucesso!');
+    this.toaster.success('Solicitação processada com sucesso!');
 
     // redirect/reload component page
     this.router.navigateByUrl('categories', {skipLocationChange: true}).then(
@@ -123,7 +125,7 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
   }
 
   private actionsForError(error) {
-    toaster.console.error('Ocorreu um erro ao processar a sua solicitação!');
+    this.toaster.error('Ocorreu um erro ao processar a sua solicitação!');
 
     this.submittingForm = false;
 
